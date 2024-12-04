@@ -24,5 +24,9 @@ classifiers = [
     'Intended Audience :: Developers',
 ]
 
+[project.urls]
+Homepage = "https://github.com/bashiron/tomillo"
+Issues = "https://github.com/bashiron/tomillo/issues"
+
 [tool.setuptools_scm]
 version_file = "src/tomillo/_version.py"
