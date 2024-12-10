@@ -1,6 +1,6 @@
 from tomillo.log_prep import config as logconf
-from bshlib.utils import super_touch
 
+from bshlib.utils import super_touch
 from pathlib import Path
 from loguru import logger
 import tomlkit
@@ -9,9 +9,11 @@ import os
 logconf()
 
 class Configuration(object):
+    """For accesing and modifying config, use the `map` attribute.
+    """
 
-    stgfile: Path
-    map: dict
+    _stgfile: Path
+    map: tomlkit.TOMLDocument
 
     def __new__(cls, project: str):
         if not hasattr(cls, 'instance'):
@@ -19,29 +21,23 @@ class Configuration(object):
         return cls.instance
 
     def __init__(self, project: str):
-        self.stgfile = Path(os.environ["HOME"]) / '.config' / project / 'settings.toml'
+        self._stgfile = Path(os.environ["HOME"]) / '.config' / project / 'settings.toml'
+        # TODO: dont debug log anything unless initialized with a option `debug=True`
         logger.debug('parsing settings file..')
-        self.map = self.parse_settings()
+        self.map = self.__parse()
 
-    def __getitem__(self, item):
-        return self.map[item]
-
-    def __setitem__(self, key, value):
-        self.map[key] = value
-        self.save_settings()
-
-    def parse_settings(self):
+    def __parse(self):
         try:
-            with open(self.stgfile, 'rt') as f:
+            with open(self._stgfile, 'rt') as f:
                 stg = tomlkit.load(f)
             logger.success('settings applied')
         except FileNotFoundError:
-            super_touch(self.stgfile)
-            stg = {}
+            super_touch(self._stgfile)
+            stg = tomlkit.document()
             logger.success('settings initialized')
         return stg
 
-    def save_settings(self):
-        with open(self.stgfile, 'wt') as f:
+    def save(self):
+        with open(self._stgfile, 'wt') as f:
             tomlkit.dump(self.map, f)
         logger.success('settings saved')
