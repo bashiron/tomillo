@@ -1,4 +1,5 @@
-from tomillo.log_prep import config as logconf
+from .log_prep import config as logconf
+from .singleton import Singleton
 
 from bshlib.utils import super_touch
 from pathlib import Path
@@ -8,18 +9,16 @@ import os
 
 logconf()
 
-class Configuration(object):
-    """For accesing and modifying config, use the `map` attribute.
+class Configuration(metaclass=Singleton):
+    """Configuration for a project.
+
+    For accesing and modifying the config object, use the `Configuration.map` attribute.
+    Its implementation of a singleton prohibits multiple configurations for different projects to exist simultaneously.
     """
 
     _stgfile: Path
     project: str
     map: tomlkit.TOMLDocument
-
-    def __new__(cls, project: str):
-        if not hasattr(cls, 'instance'):
-            cls.instance = super(Configuration, cls).__new__(cls)
-        return cls.instance
 
     def __init__(self, project: str):
         self._stgfile = Path(os.environ["HOME"]) / '.config' / project / 'settings.toml'

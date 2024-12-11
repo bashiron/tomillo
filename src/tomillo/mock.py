@@ -1,4 +1,4 @@
-from tomillo.core import Configuration as Config
+from .core import Configuration as Config
 
 from loguru import logger
 from pathlib import Path

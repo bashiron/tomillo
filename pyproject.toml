@@ -11,7 +11,7 @@ requires-python = ">= 3.12"
 keywords = []
 dynamic = ["version"]
 dependencies = [
-    'bshlib==0.4.6',
+    'bshlib==0.4.7',
     'loguru == 0.7.2',
     'tomlkit==0.13.2'
 ]
