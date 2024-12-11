@@ -13,6 +13,7 @@ class Configuration(object):
     """
 
     _stgfile: Path
+    project: str
     map: tomlkit.TOMLDocument
 
     def __new__(cls, project: str):
@@ -22,9 +23,11 @@ class Configuration(object):
 
     def __init__(self, project: str):
         self._stgfile = Path(os.environ["HOME"]) / '.config' / project / 'settings.toml'
+        self.project = project
         # TODO: dont debug log anything unless initialized with a option `debug=True`
         logger.debug('parsing settings file..')
         self.map = self.__parse()
+        self.save()
 
     def __parse(self):
         try:
@@ -34,6 +37,8 @@ class Configuration(object):
         except FileNotFoundError:
             super_touch(self._stgfile)
             stg = tomlkit.document()
+            stg.add(tomlkit.comment(f'{self.project} configuration'))
+            stg.add(tomlkit.nl())
             logger.success('settings initialized')
         return stg
 
