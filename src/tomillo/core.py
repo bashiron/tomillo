@@ -13,6 +13,7 @@ class Configuration(metaclass=Singleton):
     """Configuration for a project.
 
     For accesing and modifying the config object, use the `Configuration.map` attribute.
+
     Its implementation of a singleton prohibits multiple configurations for different projects to exist simultaneously.
     """
 
