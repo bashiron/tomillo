@@ -10,16 +10,22 @@ import os
 logconf()
 
 class Configuration(metaclass=Singleton):
-    """Configuration for a project.
+    """
+    Configuration for a project.
 
     For accesing and modifying the config object, use the `Configuration.map` attribute.
 
     Its implementation of a singleton prohibits multiple configurations for different projects to exist simultaneously.
     """
 
+    _run_stat: dict
+    """Runtime status, mostly flags"""
     _stgfile: Path
+    """Settings file path"""
     project: str
+    """Project name"""
     map: tomlkit.TOMLDocument
+    """Settings object"""
 
     def __init__(self, project: str):
         self._stgfile = Path(os.environ["HOME"]) / '.config' / project / 'settings.toml'
@@ -30,6 +36,11 @@ class Configuration(metaclass=Singleton):
         self.save()
 
     def __parse(self):
+        """
+        Parse settings from file.
+
+        Will create and initialize file if not found.
+        """
         try:
             with open(self._stgfile, 'rt') as f:
                 stg = tomlkit.load(f)
