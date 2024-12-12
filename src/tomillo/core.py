@@ -28,14 +28,12 @@ class Configuration(metaclass=Singleton):
     """Settings object"""
 
     def __init__(self, project: str):
-        self._run_stat = {'did_init': False}
         self._stgfile = Path(os.environ["HOME"]) / '.config' / project / 'settings.toml'
         self.project = project
         # TODO: dont debug log anything unless initialized with a option `debug=True`
         logger.debug('parsing settings file..')
         self.map = self.__parse()
-        if self._run_stat['did_init']:
-            self.save()
+        self.save()
 
     def __parse(self):
         """
@@ -53,7 +51,6 @@ class Configuration(metaclass=Singleton):
             stg.add(tomlkit.comment(f'{self.project} configuration'))
             stg.add(tomlkit.nl())
             logger.success('settings initialized')
-            self._run_stat['did_init'] = True
         return stg
 
     def save(self):
