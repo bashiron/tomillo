@@ -30,10 +30,9 @@ class Configuration(metaclass=Singleton):
     def __init__(self, project: str):
         self._stgfile = Path(os.environ["HOME"]) / '.config' / project / 'settings.toml'
         self.project = project
-        # TODO: dont debug log anything unless initialized with a option `debug=True`
+        # TODO: dont debug log anything unless initialized with option `debug=True`
         logger.debug('parsing settings file..')
         self.map = self.__parse()
-        self.save()
 
     def __parse(self):
         """
@@ -45,12 +44,17 @@ class Configuration(metaclass=Singleton):
             with open(self._stgfile, 'rt') as f:
                 stg = tomlkit.load(f)
             logger.success('settings applied')
+            return stg
         except FileNotFoundError:
-            super_touch(self._stgfile)
-            stg = tomlkit.document()
-            stg.add(tomlkit.comment(f'{self.project} configuration'))
-            stg.add(tomlkit.nl())
-            logger.success('settings initialized')
+            return self.__init_stg()
+
+    def __init_stg(self):
+        super_touch(self._stgfile)
+        stg = tomlkit.document()
+        stg.add(tomlkit.comment(f'{self.project} configuration'))
+        stg.add(tomlkit.nl())
+        logger.success('settings initialized')
+        self.save()
         return stg
 
     def save(self):

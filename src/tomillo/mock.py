@@ -10,4 +10,3 @@ class Configuration(Config):
         self.project = 'mock'
         logger.debug('parsing settings file..')
         self.map = self.__parse()
-        self.save()
