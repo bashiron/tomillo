@@ -11,8 +11,8 @@ requires-python = ">= 3.12"
 keywords = []
 dynamic = ["version"]
 dependencies = [
-    'bshlib==0.4.7',
-    'loguru == 0.7.2',
+    'bshlib==0.5.0',
+    'loguru == 0.7.3',
     'tomlkit==0.13.2'
 ]
 classifiers = [
